@@ -32,6 +32,13 @@ switch ($argv[1]) {
         $stmt->execute(['id' => $parent_id]);
         $parent_rgt = $stmt->fetchColumn();
 
+        $stmt = $pdo->prepare('UPDATE category SET rgt = rgt + 2 WHERE rgt >= :rgt');
+        $stmt->execute(['rgt' => $parent_rgt]);
+        $stmt = $pdo->prepare('UPDATE category SET lft = lft + 2 WHERE lft > :rgt');
+        $stmt->execute(['rgt' => $parent_rgt]);
+
+        $stmt = $pdo->prepare('INSERT INTO category (title,lft,rgt) VALUES (:title, :lft, :rgt)');
+        $stmt->execute(['title' => $title, 'lft' => $parent_rgt, 'rgt' => ($parent_rgt + 1)]);
 
         break;
 }
