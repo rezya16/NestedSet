@@ -28,6 +28,9 @@ switch ($argv[1]) {
             $parent_id = 1;
         }
 
+        $stmt = $pdo->prepare('SELECT rgt FROM category WHERE id = :id');
+        $stmt->execute(['id' => $parent_id]);
+        $parent_rgt = $stmt->fetchColumn();
 
 
         break;
