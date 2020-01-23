@@ -20,7 +20,7 @@ switch ($argv[1]) {
         if (isset($argv[2])){
             $title = $argv[2];
         } else {
-            return 'Error: 2nd argument must be a title';
+            return 'Error: 2nd argument must be a string';
         }
         if (isset($argv[3])){
             $parent_id = $argv[3];
@@ -48,5 +48,13 @@ switch ($argv[1]) {
 
         echo 'Node "'.$title.'" has been added with id #'.$id;
         break;
+    case 'deleteNode':
+        $id = $argv[2];
 
+        $stmt = $pdo->prepare('SELECT id FROM category where id = :id');
+        $stmt->execute(['id' => $id]);
+        $id = $stmt->fetchColumn();
+
+        
+        break;
 }
