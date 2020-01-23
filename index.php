@@ -33,22 +33,25 @@ switch ($argv[1]) {
         $stmt->execute(['id' => $parent_id]);
         $parent = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        if ($parent) {
+            $stmt = $pdo->prepare('UPDATE category SET rgt = rgt + 2 WHERE rgt >= :rgt');
+            $stmt->execute(['rgt' => $parent['rgt']]);
+            $stmt = $pdo->prepare('UPDATE category SET lft = lft + 2 WHERE lft > :rgt');
+            $stmt->execute(['rgt' => $parent['rgt']]);
 
-        $stmt = $pdo->prepare('UPDATE category SET rgt = rgt + 2 WHERE rgt >= :rgt');
-        $stmt->execute(['rgt' => $parent['rgt']]);
-        $stmt = $pdo->prepare('UPDATE category SET lft = lft + 2 WHERE lft > :rgt');
-        $stmt->execute(['rgt' => $parent['rgt']]);
+            $stmt = $pdo->prepare('INSERT INTO category (title,lft,rgt,lvl) VALUES (:title, :lft, :rgt, :lvl)');
+            $stmt->execute(['title' => $title, 'lft' => $parent['rgt'], 'rgt' => $parent['rgt'] + 1, 'lvl' => $parent['lvl'] + 1]);
 
-        $stmt = $pdo->prepare('INSERT INTO category (title,lft,rgt,lvl) VALUES (:title, :lft, :rgt, :lvl)');
-        $stmt->execute(['title' => $title, 'lft' => $parent['rgt'], 'rgt' => $parent['rgt'] + 1, 'lvl' => $parent['lvl'] + 1]);
+            $stmt = $pdo->prepare('SELECT MAX(id) FROM category');
+            $stmt->execute();
+            $id = $stmt->fetchColumn();
 
-        $stmt = $pdo->prepare('SELECT MAX(id) FROM category');
-        $stmt->execute();
-        $id = $stmt->fetchColumn();
-
-        echo 'Node "'.$title.'" has been added with id #'.$id;
-
+            echo 'Node "'.$title.'" has been added with id #'.$id;
+        } else {
+            echo 'Error, node with id #'.$argv[3].' is not found';
+        }
         break;
+
     case 'deleteNode':
         $id = $argv[2];
 
