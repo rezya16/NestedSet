@@ -26,7 +26,15 @@ switch ($argv[1]) {
         if (isset($argv[3])){
             $parent_id = $argv[3];
         } else {
-            $parent_id = 1;
+            $stmt = $pdo->prepare('INSERT INTO category (title,lft,rgt,lvl) VALUES (:title, :lft, :rgt, :lvl)');
+            $stmt->execute(['title' => $title, 'lft' => 1, 'rgt' => 2, 'lvl' => 1]);
+
+            $stmt = $pdo->prepare('SELECT MAX(id) FROM category');
+            $stmt->execute();
+            $id = $stmt->fetchColumn();
+
+            echo 'Node "'.$title.'" has been added with id #'.$id;
+            break;
         }
 
         $stmt = $pdo->prepare('SELECT rgt,lvl FROM category WHERE id = :id');
