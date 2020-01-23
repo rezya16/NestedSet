@@ -60,6 +60,8 @@ switch ($argv[1]) {
             $stmt->execute(['id' => $id]);
 
             echo 'Node id #'.$id.' has been deleted';
+        } else {
+            echo 'Error, node with id #'.$argv[2].' is not found';
         }
         break;
 }
