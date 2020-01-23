@@ -57,8 +57,19 @@ switch ($argv[1]) {
         $id = $stmt->fetchColumn();
 
         if ($id) {
+            $stmt = $pdo->prepare('SELECT rgt, lft, lvl FROM category WHERE id = :id');
+            $stmt->execute(['id' => $id]);
+            $current = $stmt->fetch(PDO::FETCH_ASSOC);
+
             $stmt = $pdo->prepare('DELETE FROM category WHERE id = :id');
             $stmt->execute(['id' => $id]);
+
+            $stmt = $pdo->prepare('UPDATE category SET lft = lft - 1, rgt = rgt - 1, lvl = lvl - 1 WHERE lft >= :lft AND rgt <= :rgt');
+            $stmt->execute(['lft' => $current['lft'],'rgt' => $current['rgt']]);
+            $stmt = $pdo->prepare('UPDATE category SET lft = lft - 2 WHERE lft >= :rgt');
+            $stmt->execute(['rgt' => $current['rgt']]);
+            $stmt = $pdo->prepare('UPDATE category SET rgt = rgt - 2 WHERE rgt >= :rgt');
+            $stmt->execute(['rgt' => $current['rgt']]);
 
             echo 'Node id #'.$id.' has been deleted';
         } else {
@@ -66,3 +77,6 @@ switch ($argv[1]) {
         }
         break;
 }
+
+
+
