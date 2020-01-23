@@ -42,6 +42,11 @@ switch ($argv[1]) {
         $stmt = $pdo->prepare('INSERT INTO category (title,lft,rgt,lvl) VALUES (:title, :lft, :rgt, :lvl)');
         $stmt->execute(['title' => $title, 'lft' => $parent['rgt'], 'rgt' => $parent['rgt'] + 1, 'lvl' => $parent['lvl'] + 1]);
 
+        $stmt = $pdo->prepare('SELECT MAX(id) FROM category');
+        $stmt->execute();
+        $id = $stmt->fetchColumn();
 
+        echo 'Node "'.$title.'" has been added with id #'.$id;
         break;
+
 }
