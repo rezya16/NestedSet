@@ -57,6 +57,10 @@ switch ($argv[1]) {
             $stmt = $pdo->prepare('DELETE FROM category WHERE id = :id');
             $stmt->execute(['id' => $id]);
 
+            $stmt = $pdo->prepare('SELECT rgt, lft, lvl FROM category WHERE id = :id');
+            $stmt->execute(['id' => $id]);
+            $current = $stmt->fetch(PDO::FETCH_ASSOC);
+
             echo 'Node id #'.$id.' has been deleted';
         } else {
             echo 'Error, node with id #'.$argv[2].' is not found';
