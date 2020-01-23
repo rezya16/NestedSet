@@ -76,6 +76,27 @@ switch ($argv[1]) {
             echo 'Error, node with id #'.$argv[2].' is not found';
         }
         break;
+    case 'renameNode':
+        if (isset($argv[2]) && isset($argv[3])) {
+            $id = $argv[2];
+            $title = $argv[3];
+        } else {
+            echo 'Error, 2nd argument must be an id and 3rd argument must be a title';
+            break;
+        }
+
+        $stmt = $pdo->prepare('SELECT id FROM category where id = :id');
+        $stmt->execute(['id' => $id]);
+        $id = $stmt->fetchColumn();
+
+        if ($id) {
+            $stmt = $pdo->prepare('UPDATE category SET title = :title WHERE id = :id');
+            $stmt->execute(['title' => $title, 'id' => $id]);
+            echo 'Node id #'.$id.' changed to "'.$title.'"';
+        } else {
+            echo 'Error, node with id #'.$argv[2].' is not found';
+        }
+        break;
 }
 
 
