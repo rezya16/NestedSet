@@ -42,6 +42,27 @@ switch ($argv[1]) {
         $stmt = $pdo->prepare('INSERT INTO category (title,lft,rgt,lvl) VALUES (:title, :lft, :rgt, :lvl)');
         $stmt->execute(['title' => $title, 'lft' => $parent['rgt'], 'rgt' => $parent['rgt'] + 1, 'lvl' => $parent['lvl'] + 1]);
 
+        $stmt = $pdo->prepare('SELECT MAX(id) FROM category');
+        $stmt->execute();
+        $id = $stmt->fetchColumn();
 
+        echo 'Node "'.$title.'" has been added with id #'.$id;
+
+        break;
+    case 'deleteNode':
+        $id = $argv[2];
+
+        $stmt = $pdo->prepare('SELECT id FROM category where id = :id');
+        $stmt->execute(['id' => $id]);
+        $id = $stmt->fetchColumn();
+
+        if ($id) {
+            $stmt = $pdo->prepare('DELETE FROM category WHERE id = :id');
+            $stmt->execute(['id' => $id]);
+
+            echo 'Node id #'.$id.' has been deleted';
+        } else {
+            echo 'Error, node with id #'.$argv[2].' is not found';
+        }
         break;
 }
