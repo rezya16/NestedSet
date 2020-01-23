@@ -55,6 +55,11 @@ switch ($argv[1]) {
         $stmt->execute(['id' => $id]);
         $id = $stmt->fetchColumn();
 
-        
+        if ($id) {
+            $stmt = $pdo->prepare('DELETE FROM category WHERE id = :id');
+            $stmt->execute(['id' => $id]);
+
+            echo 'Node id #'.$id.' has been deleted';
+        }
         break;
 }
