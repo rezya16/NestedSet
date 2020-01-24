@@ -107,4 +107,6 @@ switch ($argv[1]) {
             echo 'Error, node with id #'.$argv[2].' is not found';
         }
         break;
+    default:
+        echo 'Error, unknown command';
 }
